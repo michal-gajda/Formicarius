@@ -1,0 +1,43 @@
+networks:
+  formicarius-network:
+    driver: bridge
+
+services:
+  formicarius:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    image: gajdaltd/formicarius:latest
+    container_name: formicarius
+    ports:
+      - "5080:5080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ASPNETCORE_URLS=http://+:5080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelp-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    depends_on:
+      - otelp-collector
+      - seq
+    networks:
+      - formicarius-network
+  otelp-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    networks:
+      - formicarius-network
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "15341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
+    networks:
+      - formicarius-network
