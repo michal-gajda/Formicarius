@@ -1,0 +1,15 @@
+# Root config
+root = true
+
+[*.cs]
+charset = utf-8-bom
+insert_final_newline = true
+
+[*.{csproj,xml,json,config,props,targets}]
+charset = utf-8
+
+[*.md]
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = off

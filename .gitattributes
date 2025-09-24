@@ -1,0 +1,3 @@
+*.cs text working-tree-encoding=UTF-8
+*.{csproj,xml,json,config,props,targets,resx,yml,yaml} text working-tree-encoding=UTF-8
+*.md text working-tree-encoding=UTF-8
